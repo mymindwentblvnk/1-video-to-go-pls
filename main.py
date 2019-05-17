@@ -5,10 +5,15 @@ from apiclient.http import MediaFileUpload
 from googleapiclient import discovery
 from google.oauth2 import service_account
 
+from flask import Flask
+
 from pytube import YouTube
 
 
 MIME_TYPE = 'video/mp4'
+
+
+app = Flask(__name__)
 
 
 class YouTubeClient(object):
@@ -51,7 +56,12 @@ class GoogleDriveClient(object):
         os.remove(file_path)
 
 
-if __name__ == '__main__':
+@app.route('/')
+def index():
     google_folder_id = open('parent_id.txt').read().split()
     file_name = YouTubeClient().download('https://www.youtube.com/watch?v=YNcBqW0CkpM')
     GoogleDriveClient(google_folder_id).upload_file(file_name)
+
+
+if __name__ == '__main__':
+    app.run()
